@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found | EduMetrics.AI{% endblock %}
+{% block content %}
+<section class="error-page">
+    <span class="error-code">404</span>
+    <h1>This page hasn't been graded yet.</h1>
+    <p>The page you're looking for doesn't exist. Head back to the predictor to try again.</p>
+    <a href="{{ url_for('home') }}" class="btn-predict btn-inline">Back to Predict</a>
+</section>
+{% endblock %}

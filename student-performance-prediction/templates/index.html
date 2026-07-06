@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% block title %}Predict Performance | EduMetrics.AI{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-copy">
+        <p class="eyebrow">Machine Learning &middot; Academic Analytics</p>
+        <h1>Forecast a student's<br><span class="hero-highlight">final exam score</span><br>before the exam happens.</h1>
+        <p class="hero-sub">
+            Enter a student's study habits, attendance, and background below.
+            A Gradient Boosting regression model &mdash; trained on 2,500 student
+            records &mdash; predicts their final exam score, letter grade, and
+            pass/fail likelihood in real time.
+        </p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <span class="hero-stat-value" data-stat="r2">&mdash;</span>
+                <span class="hero-stat-label">R&sup2; Score</span>
+            </div>
+            <div class="hero-stat">
+                <span class="hero-stat-value" data-stat="accuracy">&mdash;</span>
+                <span class="hero-stat-label">Pass/Fail Accuracy</span>
+            </div>
+            <div class="hero-stat">
+                <span class="hero-stat-value" data-stat="total">2,500</span>
+                <span class="hero-stat-label">Training Records</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="predictor-grid">
+    <!-- ============ FORM ============ -->
+    <form id="predict-form" class="ledger-card form-card" novalidate>
+        <div class="form-section">
+            <h2 class="form-section-title">Academic Record</h2>
+            <div class="field-row">
+                <label for="previous_exam_score">Previous Exam Score
+                    <span class="field-value-badge" data-echo="previous_exam_score">78</span>
+                </label>
+                <input type="range" id="previous_exam_score" name="previous_exam_score" min="0" max="100" step="1" value="78" required>
+            </div>
+            <div class="field-row">
+                <label for="study_hours_per_week">Study Hours / Week
+                    <span class="field-value-badge" data-echo="study_hours_per_week">15</span>
+                </label>
+                <input type="range" id="study_hours_per_week" name="study_hours_per_week" min="0" max="40" step="1" value="15" required>
+            </div>
+            <div class="field-row">
+                <label for="attendance_percentage">Attendance
+                    <span class="field-value-badge" data-echo="attendance_percentage">85%</span>
+                </label>
+                <input type="range" id="attendance_percentage" name="attendance_percentage" min="0" max="100" step="1" value="85" data-suffix="%" required>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="form-section-title">Lifestyle &amp; Habits</h2>
+            <div class="field-row">
+                <label for="sleep_hours">Sleep (hrs/night)
+                    <span class="field-value-badge" data-echo="sleep_hours">7</span>
+                </label>
+                <input type="range" id="sleep_hours" name="sleep_hours" min="4" max="10" step="0.5" value="7" required>
+            </div>
+            <div class="field-row">
+                <label for="screen_time_hours">Screen Time (hrs/day)
+                    <span class="field-value-badge" data-echo="screen_time_hours">3</span>
+                </label>
+                <input type="range" id="screen_time_hours" name="screen_time_hours" min="0" max="12" step="0.5" value="3" required>
+            </div>
+            <div class="field-grid-2">
+                <div class="field-row-select">
+                    <label for="tutoring">Attends Tutoring</label>
+                    <select id="tutoring" name="tutoring" required>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                <div class="field-row-select">
+                    <label for="part_time_job">Part-Time Job</label>
+                    <select id="part_time_job" name="part_time_job" required>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                <div class="field-row-select">
+                    <label for="extracurricular_activities">Extracurriculars</label>
+                    <select id="extracurricular_activities" name="extracurricular_activities" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="field-row-select">
+                    <label for="internet_access">Internet Access</label>
+                    <select id="internet_access" name="internet_access" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="form-section-title">Background</h2>
+            <div class="field-grid-2">
+                <div class="field-row-select">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                    </select>
+                </div>
+                <div class="field-row-select">
+                    <label for="age">Age</label>
+                    <select id="age" name="age" required>
+                        {% for a in range(15, 23) %}
+                        <option value="{{ a }}" {{ 'selected' if a == 18 else '' }}>{{ a }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field-row-select">
+                    <label for="parental_education">Parental Education</label>
+                    <select id="parental_education" name="parental_education" required>
+                        <option value="High School">High School</option>
+                        <option value="Bachelors">Bachelors</option>
+                        <option value="Masters" selected>Masters</option>
+                        <option value="PhD">PhD</option>
+                    </select>
+                </div>
+                <div class="field-row-select">
+                    <label for="family_income_level">Family Income</label>
+                    <select id="family_income_level" name="family_income_level" required>
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div class="field-row-select">
+                    <label for="parental_involvement">Parental Involvement</label>
+                    <select id="parental_involvement" name="parental_involvement" required>
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-predict" id="predict-btn">
+            <span class="btn-label">Predict Performance</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+        <p class="form-error" id="form-error" role="alert" hidden></p>
+    </form>
+
+    <!-- ============ RESULT / GAUGE ============ -->
+    <div class="ledger-card result-card" id="result-card">
+        <h2 class="form-section-title">Predicted Outcome</h2>
+
+        <div class="gauge-wrap">
+            <svg viewBox="0 0 240 150" class="gauge-svg" aria-hidden="true">
+                <path d="M 20 130 A 100 100 0 0 1 220 130" fill="none" stroke="#e7ddc4" stroke-width="16" stroke-linecap="round"/>
+                <path id="gauge-arc-fail" d="M 20 130 A 100 100 0 0 1 84 41" fill="none" stroke="#B4453B" stroke-width="16" stroke-linecap="round"/>
+                <path id="gauge-arc-avg" d="M 84 41 A 100 100 0 0 1 156 41" fill="none" stroke="#C89B3C" stroke-width="16" stroke-linecap="round"/>
+                <path id="gauge-arc-pass" d="M 156 41 A 100 100 0 0 1 220 130" fill="none" stroke="#3D7A54" stroke-width="16" stroke-linecap="round"/>
+                <g id="gauge-needle" style="transform-origin: 120px 130px; transform: rotate(-90deg); transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);">
+                    <line x1="120" y1="130" x2="120" y2="45" stroke="var(--ink)" stroke-width="3.5" stroke-linecap="round"/>
+                </g>
+                <circle cx="120" cy="130" r="8" fill="var(--ink)"/>
+            </svg>
+            <div class="gauge-readout">
+                <span class="gauge-score" id="gauge-score">--</span>
+                <span class="gauge-score-label">/ 100</span>
+            </div>
+        </div>
+
+        <div class="result-badges">
+            <div class="result-badge" id="grade-badge">
+                <span class="result-badge-label">Grade</span>
+                <span class="result-badge-value" id="grade-value">&mdash;</span>
+            </div>
+            <div class="result-badge" id="passfail-badge">
+                <span class="result-badge-label">Outcome</span>
+                <span class="result-badge-value" id="passfail-value">&mdash;</span>
+            </div>
+            <div class="result-badge">
+                <span class="result-badge-label">Pass Probability</span>
+                <span class="result-badge-value" id="probability-value">&mdash;</span>
+            </div>
+        </div>
+
+        <p class="result-remark" id="result-remark">
+            Fill in the form and click <strong>Predict Performance</strong> to see this student's forecast.
+        </p>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Server-rendered validation ranges, used by main.js for client-side checks
+    window.NUMERIC_RANGES = {{ ranges|tojson }};
+</script>
+{% endblock %}
